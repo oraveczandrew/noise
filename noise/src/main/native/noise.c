@@ -15,9 +15,12 @@ typedef struct {
 } NoiseImaginaryConfig;
 
 JNIEXPORT jlong JNICALL
-Java_com_paramsen_noise_NoiseNativeBridge_realConfig(JNIEnv *env, jclass jThis,
+Java_com_paramsen_noise_NoiseNativeBridge_realConfig(__attribute__((unused)) JNIEnv *env, __attribute__((unused)) jclass jThis,
                                                            jint inSize) {
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "MemoryLeak"
     NoiseRealConfig *cfg = (NoiseRealConfig *) malloc(sizeof(NoiseRealConfig));
+#pragma clang diagnostic pop
     cfg->config = kiss_fftr_alloc(inSize, 0, 0, 0);
     cfg->result = (kiss_fft_cpx *) malloc(sizeof(kiss_fft_cpx) * inSize + 2);
 
@@ -25,7 +28,7 @@ Java_com_paramsen_noise_NoiseNativeBridge_realConfig(JNIEnv *env, jclass jThis,
 }
 
 JNIEXPORT void JNICALL
-Java_com_paramsen_noise_NoiseNativeBridge_realConfigDispose(JNIEnv *env, jclass jThis,
+Java_com_paramsen_noise_NoiseNativeBridge_realConfigDispose(__attribute__((unused)) JNIEnv *env, __attribute__((unused)) jclass jThis,
                                                                   jlong cfgPointer) {
     NoiseRealConfig *cfg = (NoiseRealConfig *) cfgPointer;
 
@@ -35,7 +38,7 @@ Java_com_paramsen_noise_NoiseNativeBridge_realConfigDispose(JNIEnv *env, jclass 
 }
 
 JNIEXPORT void JNICALL
-Java_com_paramsen_noise_NoiseNativeBridge_real(JNIEnv *env, jclass jThis,
+Java_com_paramsen_noise_NoiseNativeBridge_real(JNIEnv *env, __attribute__((unused)) jclass jThis,
                                                         jfloatArray jInput,
                                                         jfloatArray jOutput, jlong cfgPointer) {
     jsize inSize = (*env)->GetArrayLength(env, jInput);
@@ -64,10 +67,12 @@ Java_com_paramsen_noise_NoiseNativeBridge_real(JNIEnv *env, jclass jThis,
 }
 
 JNIEXPORT jlong JNICALL
-Java_com_paramsen_noise_NoiseNativeBridge_imaginaryConfig(JNIEnv *env, jclass jThis,
+Java_com_paramsen_noise_NoiseNativeBridge_imaginaryConfig(__attribute__((unused)) JNIEnv *env, __attribute__((unused)) jclass jThis,
                                                                 jint inSize) {
-    NoiseImaginaryConfig *cfg = (NoiseImaginaryConfig *) malloc(
-            sizeof(NoiseImaginaryConfig));
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "MemoryLeak"
+    NoiseImaginaryConfig *cfg = (NoiseImaginaryConfig *) malloc(sizeof(NoiseImaginaryConfig));
+#pragma clang diagnostic pop
     cfg->config = kiss_fft_alloc(inSize / 2, 0, 0, 0);
     cfg->fftInput = (kiss_fft_cpx *) malloc(sizeof(kiss_fft_cpx) * inSize / 2);
     cfg->result = (kiss_fft_cpx *) malloc(sizeof(kiss_fft_cpx) * inSize / 2);
@@ -76,7 +81,7 @@ Java_com_paramsen_noise_NoiseNativeBridge_imaginaryConfig(JNIEnv *env, jclass jT
 }
 
 JNIEXPORT void JNICALL
-Java_com_paramsen_noise_NoiseNativeBridge_imaginaryConfigDispose(JNIEnv *env, jclass jThis,
+Java_com_paramsen_noise_NoiseNativeBridge_imaginaryConfigDispose(__attribute__((unused)) JNIEnv *env, __attribute__((unused)) jclass jThis,
                                                                        jlong cfgPointer) {
     NoiseImaginaryConfig *cfg = (NoiseImaginaryConfig *) cfgPointer;
 
@@ -87,7 +92,7 @@ Java_com_paramsen_noise_NoiseNativeBridge_imaginaryConfigDispose(JNIEnv *env, jc
 }
 
 JNIEXPORT void JNICALL
-Java_com_paramsen_noise_NoiseNativeBridge_imaginary(JNIEnv *env, jclass jThis,
+Java_com_paramsen_noise_NoiseNativeBridge_imaginary(JNIEnv *env, __attribute__((unused)) jclass jThis,
                                                              jfloatArray jInput,
                                                              jfloatArray jOutput,
                                                              jlong cfgPointer) {

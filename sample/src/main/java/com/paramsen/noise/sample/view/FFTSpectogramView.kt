@@ -38,13 +38,14 @@ class FFTSpectogramView(context: Context, attrs: AttributeSet?) : SimpleSurface(
     var lastAvg = Pair(System.currentTimeMillis(), 0)
 
     init {
-        paintSpectogram.color = Color.parseColor("#FF2C00")
+        paintSpectogram.color = 0xFFFF2C00.toInt()
         paintSpectogram.style = Paint.Style.FILL
     }
 
     fun drawTitle(canvas: Canvas) = canvas.drawText("FFT SPECTOGRAM", 16f.px, 24f.px, paintText)
 
     fun drawIndicator(canvas: Canvas) {
+        val height = height
         for (i in 0..height) {
             val f = i / height.toDouble()
             paintSpectogram.color = Spectogram.color(1.0 - f)
@@ -62,6 +63,9 @@ class FFTSpectogramView(context: Context, attrs: AttributeSet?) : SimpleSurface(
     }
 
     fun drawSpectogram(canvas: Canvas) {
+        val width = width
+        val height = height
+
         val fftW = width / history.toFloat()
         val bandWH = height / resolution.toFloat()
 
@@ -165,8 +169,9 @@ class FFTSpectogramView(context: Context, attrs: AttributeSet?) : SimpleSurface(
     }
 
     private fun avgDrawTime(): Int {
-        if (System.currentTimeMillis() - lastAvg.first > 1000) {
-            lastAvg = Pair(System.currentTimeMillis(), if (drawTimes.size > 0) drawTimes.sum().div(drawTimes.size).toInt() else 0)
+        val now = System.currentTimeMillis()
+        if (now - lastAvg.first > 1000) {
+            lastAvg = Pair(now, if (drawTimes.isNotEmpty()) drawTimes.average().toInt() else 0)
         }
 
         return lastAvg.second

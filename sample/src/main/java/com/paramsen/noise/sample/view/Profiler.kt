@@ -1,14 +1,18 @@
 package com.paramsen.noise.sample.view
 
 import android.util.Log
+import android.util.SparseIntArray
+import androidx.core.util.forEach
 
 class Profiler(val tag: String) {
-    val TAG = javaClass.simpleName
+
+    @Suppress("PropertyName", "UNNECESSARY_NOT_NULL_ASSERTION")
+    val TAG: String = javaClass.simpleName!!
 
     private var count = 0L
     private var time = 0L
 
-    private val hashes = HashMap<Int, Int>()
+    private val hashes = SparseIntArray()
 
     fun next() {
         if (time == 0L) time = System.currentTimeMillis()
@@ -23,13 +27,17 @@ class Profiler(val tag: String) {
     }
 
     fun next(hash: Int) {
-        if (time == 0L) time = System.currentTimeMillis()
+        val now = System.currentTimeMillis()
 
-        hashes[hash] = (hashes[hash] ?: 0).inc()
+        if (time == 0L) {
+            time = now
+        }
 
-        if (System.currentTimeMillis() - time > 1000L) {
-            time = System.currentTimeMillis()
-            hashes.forEach { if (it.value > 1) Log.d(TAG, "===$tag: ${it.value}") }
+        hashes.put(hash, hashes[hash] + 1)
+
+        if (now - time > 1000L) {
+            time = now
+            hashes.forEach { _, value -> if (value > 1) Log.d(TAG, "===$tag: ${value}") }
             Log.d(TAG, "===$tag: $count/1000ms")
             count = 0
             hashes.clear()

@@ -6,6 +6,8 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import java.lang.System.arraycopy
+import kotlin.math.min
+import kotlin.math.pow
 
 /**
  * @author Pär Amsen 06/2017
@@ -24,36 +26,42 @@ class FFTBandView(context: Context, attrs: AttributeSet?) : SimpleSurface(contex
     val paintText: Paint = textPaint()
 
     init {
-        paintBandsFill.color = Color.parseColor("#33FF2C00")
+        paintBandsFill.color = 0x33FF2C00
         paintBandsFill.style = Paint.Style.FILL
 
-        paintBands.color = Color.parseColor("#AAFF2C00")
+        paintBands.color = 0xAAFF2C00.toInt()
         paintBands.strokeWidth = 1f
         paintBands.style = Paint.Style.STROKE
 
-        paintAvg.color = Color.parseColor("#33FFFFFF")
+        paintAvg.color = 0x33FFFFFF
         paintAvg.strokeWidth = 1f
         paintAvg.style = Paint.Style.STROKE
     }
 
     fun drawAudio(canvas: Canvas): Canvas {
         canvas.drawColor(Color.DKGRAY)
+
+        val height = height
+        val width = width
+        val bandsF = bands.toFloat()
+
         for (i in 0..bands - 1) {
-            var accum = .0f
+            var acc = .0f
 
             synchronized(fft) {
                 for (j in 0..bandSize - 1 step 2) {
                     //convert real and imag part to get energy
-                    accum += (Math.pow(fft[j + (i * bandSize)].toDouble(), 2.0) + Math.pow(fft[j + 1 + (i * bandSize)].toDouble(), 2.0)).toFloat()
+                    acc += (fft[j + (i * bandSize)].toDouble().pow(2) +
+                            fft[j + 1 + (i * bandSize)].toDouble().pow(2)).toFloat()
                 }
 
-                accum /= bandSize / 2
+                acc /= bandSize / 2
             }
 
-            average += accum
+            average += acc
 
-            canvas.drawRect(width * (i / bands.toFloat()), height - (height * Math.min(accum / maxConst.toDouble(), 1.0).toFloat()) - height * .02f, width * (i / bands.toFloat()) + width / bands.toFloat(), height.toFloat(), paintBandsFill)
-            canvas.drawRect(width * (i / bands.toFloat()), height - (height * Math.min(accum / maxConst.toDouble(), 1.0).toFloat()) - height * .02f, width * (i / bands.toFloat()) + width / bands.toFloat(), height.toFloat(), paintBands)
+            canvas.drawRect(width * (i / bandsF), height - (height * min(acc / maxConst.toDouble(), 1.0).toFloat()) - height * .02f, width * (i / bandsF) + width / bandsF, height.toFloat(), paintBandsFill)
+            canvas.drawRect(width * (i / bandsF), height - (height * min(acc / maxConst.toDouble(), 1.0).toFloat()) - height * .02f, width * (i / bandsF) + width / bandsF, height.toFloat(), paintBands)
         }
 
         average /= bands

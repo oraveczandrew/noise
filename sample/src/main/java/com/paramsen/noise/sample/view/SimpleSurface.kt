@@ -12,18 +12,21 @@ import java.util.concurrent.atomic.AtomicBoolean
  */
 
 abstract class SimpleSurface(context: Context, attrs: AttributeSet?) : SurfaceView(context, attrs) {
+
+    @JvmField
     val active = AtomicBoolean(false)
 
     init {
         holder.addCallback(object : SurfaceHolder.Callback {
-            override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
+            override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
+                // do nothing
             }
 
-            override fun surfaceDestroyed(holder: SurfaceHolder?) {
+            override fun surfaceDestroyed(holder: SurfaceHolder) {
                 active.set(false)
             }
 
-            override fun surfaceCreated(holder: SurfaceHolder?) {
+            override fun surfaceCreated(holder: SurfaceHolder) {
                 active.set(true)
             }
         })

@@ -7,7 +7,11 @@ import java.io.Closeable
  *
  * @author Pär Amsen 11/2019
  */
-class Noise private constructor(private val configPointer: Long, private val isReal: Boolean) : Closeable {
+class Noise private constructor(
+    private val configPointer: Long,
+    private val isReal: Boolean
+) : Closeable {
+
     /** @return dst for convenience */
     fun fft(src: FloatArray, dst: FloatArray): FloatArray {
         if (isReal) {

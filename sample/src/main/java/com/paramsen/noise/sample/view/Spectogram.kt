@@ -2,13 +2,17 @@ package com.paramsen.noise.sample.view
 
 import android.graphics.Color
 import android.util.Log
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * @author Pär Amsen 07/2017
  */
 
 object Spectogram {
-    val TAG = javaClass.simpleName!!
+
+    @Suppress("UNNECESSARY_NOT_NULL_ASSERTION")
+    val TAG: String = javaClass.simpleName!!
 
     private val a = intArrayOf(20, 20, 25)
     private val b = intArrayOf(28, 135, 255)
@@ -16,18 +20,21 @@ object Spectogram {
     private val d = intArrayOf(249, 255, 25)
     private val e = intArrayOf(255, 255, 255)
 
-    private val range = 256
+    private const val RANGE = 256
     private val spectogram: IntArray = generate()
 
-    fun color(f: Double): Int = spectogram[Math.min(((range - 1) * f), range.toDouble() - 1).toInt()]
+    fun color(f: Double): Int {
+        val n = ((RANGE - 1) * f).toInt()
+        return spectogram[clamp(n, 0, RANGE - 1)]
+    }
 
     private fun generate(): IntArray {
         Log.d(TAG, "generate spectogram colors")
 
-        val spectogram = IntArray(range)
+        val spectogram = IntArray(RANGE)
 
-        for (i in 0..range - 1) {
-            val f = i / range.toDouble()
+        for (i in 0..RANGE - 1) {
+            val f = i / RANGE.toDouble()
             val f1 = f * 4.0 % 1.0
 
             val blend = when ((f * 100).toInt()) {
@@ -47,4 +54,7 @@ object Spectogram {
     }
 
     private fun rgb(rgb: List<Int>): Int = Color.rgb(rgb[0], rgb[1], rgb[2])
+
+    @Suppress("SameParameterValue", "NOTHING_TO_INLINE")
+    private inline fun clamp(n: Int, min: Int, max: Int): Int = min(max(n, min), max)
 }
