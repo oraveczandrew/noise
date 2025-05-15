@@ -5,7 +5,7 @@ add_library(noise
         SHARED
         src/main/native/noise.c
         src/main/native/kissfft/kiss_fft.c
-        src/main/native/kissfft/tools/kiss_fftr.c)
+        src/main/native/kissfft/kiss_fftr.c)
 
 target_include_directories(noise
         PRIVATE
