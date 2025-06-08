@@ -82,7 +82,7 @@ dependencies {
     val lifecycleVersion = "2.9.0"
 
     implementation(kotlin("stdlib"))
-    implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("com.android.support.constraint:constraint-layout:2.2.1")
     implementation("androidx.collection:collection:1.5.0")
 
