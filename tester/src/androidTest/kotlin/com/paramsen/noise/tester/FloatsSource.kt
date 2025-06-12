@@ -46,7 +46,7 @@ class FloatsSource(
         return try {
             readFloat()
         } catch (_: IOException) {
-            Float.Companion.MIN_VALUE
+            Float.MIN_VALUE
         }
     }
 }
