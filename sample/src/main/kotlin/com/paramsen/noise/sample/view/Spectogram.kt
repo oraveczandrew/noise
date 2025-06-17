@@ -11,8 +11,7 @@ import kotlin.math.min
 
 object Spectogram {
 
-    @Suppress("UNNECESSARY_NOT_NULL_ASSERTION")
-    val TAG: String = javaClass.simpleName!!
+    private const val TAG: String = "Spectogram"
 
     private val a = intArrayOf(20, 20, 25)
     private val b = intArrayOf(28, 135, 255)
@@ -33,7 +32,7 @@ object Spectogram {
 
         val spectogram = IntArray(RANGE)
 
-        for (i in 0..RANGE - 1) {
+        for (i in 0 until RANGE) {
             val f = i / RANGE.toDouble()
             val f1 = f * 4.0 % 1.0
 

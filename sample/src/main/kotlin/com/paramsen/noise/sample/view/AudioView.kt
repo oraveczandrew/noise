@@ -31,9 +31,12 @@ class AudioView(context: Context, attrs: AttributeSet?) : SimpleSurface(context,
 
     private val bg = 0xFF39424F.toInt()
 
+    private val textX = 16f.px
+    private val textY = 24f.px
+
     fun drawAudio(canvas: Canvas): Canvas {
         val width = width
-        val height = height
+        val heightF = height.toFloat()
 
         val path = path
         val audio = audio
@@ -47,17 +50,17 @@ class AudioView(context: Context, attrs: AttributeSet?) : SimpleSurface(context,
                     path.moveTo(width.toFloat(), sample)
                 }
 
-                path.lineTo(width - width * i / history.toFloat(), min(sample * 0.175f + height / 2f, height.toFloat()))
+                path.lineTo(width - width * i / history.toFloat(), min(sample * 0.175f + heightF / 2f, heightF))
             }
 
-            if (audio.size in 1 .. (history - 1)) {
-                path.lineTo(0f, height / 2f)
+            if (audio.size in 1 until history) {
+                path.lineTo(0f, heightF / 2f)
             }
         }
 
         canvas.drawColor(bg)
         canvas.drawPath(path, paintAudio)
-        canvas.drawText("AUDIO", 16f.px, 24f.px, paintText)
+        canvas.drawText("AUDIO", textX, textY, paintText)
 
         return canvas
     }
@@ -82,6 +85,6 @@ class AudioView(context: Context, attrs: AttributeSet?) : SimpleSurface(context,
             }
         }
 
-        drawSurface(this::drawAudio)
+        drawSurface(::drawAudio)
     }
 }

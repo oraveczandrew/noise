@@ -37,7 +37,7 @@ class Profiler(val tag: String) {
 
         if (now - time > 1000L) {
             time = now
-            hashes.forEach { _, value -> if (value > 1) Log.d(TAG, "===$tag: ${value}") }
+            hashes.forEach { _, value -> if (value > 1) Log.d(TAG, "===$tag: $value") }
             Log.d(TAG, "===$tag: $count/1000ms")
             count = 0
             hashes.clear()

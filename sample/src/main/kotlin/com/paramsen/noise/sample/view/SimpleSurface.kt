@@ -13,8 +13,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 abstract class SimpleSurface(context: Context, attrs: AttributeSet?) : SurfaceView(context, attrs) {
 
-    @JvmField
-    val active = AtomicBoolean(false)
+    @PublishedApi
+    internal val active = AtomicBoolean(false)
 
     init {
         holder.addCallback(object : SurfaceHolder.Callback {
@@ -32,8 +32,9 @@ abstract class SimpleSurface(context: Context, attrs: AttributeSet?) : SurfaceVi
         })
     }
 
-    fun drawSurface(ifActive: (Canvas) -> Canvas) {
+    inline fun drawSurface(ifActive: (Canvas) -> Canvas) {
         if (active.get()) {
+            val holder = holder
             holder.unlockCanvasAndPost(ifActive(holder.lockCanvas()))
         }
     }

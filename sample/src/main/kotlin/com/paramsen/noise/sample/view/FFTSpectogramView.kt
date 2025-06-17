@@ -11,40 +11,51 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 import kotlin.system.measureTimeMillis
 
+private const val TAG: String = "FFTSpectogramView"
+
 /**
  * @author Pär Amsen 06/2017
  */
 class FFTSpectogramView(context: Context, attrs: AttributeSet?) : SimpleSurface(context, attrs), FFTView {
-    val TAG = javaClass.simpleName
 
-    val sec = 10
-    val hz = 44100 / 4096
-    val fps = 80
-    val history = hz * sec
-    var resolution = 512
-    var minResolution = 64
-    val ffts = ArrayDeque<FloatArray>()
+    private val sec = 10
+    private val hz = 44100 / 4096
+    private val fps = 80
+    private val history = hz * sec
+    private var resolution = 512
+    private val minResolution = 64
+    private val ffts = ArrayDeque<FloatArray>()
 
-    val paintSpectogram: Paint = Paint()
-    val paintText: Paint = textPaint()
-    val paintMsg: Paint = errTextPaint()
-    val bg = Color.rgb(20, 20, 25)
+    private val paintSpectogram: Paint = Paint()
+    private val paintText: Paint = textPaint()
+    private val paintMsg: Paint = errTextPaint()
+    private val bg = Color.rgb(20, 20, 25)
 
-    val hotThresholds = hashMapOf(512 to 15000, 256 to 15000, 128 to 30000, 64 to 45000)
+    private val hotThresholds = hashMapOf(512 to 15000, 256 to 15000, 128 to 30000, 64 to 45000)
 
-    val drawTimes = ArrayDeque<Long>()
-    var msg: Pair<Long, String>? = null
+    private val drawTimes = ArrayDeque<Long>()
+    private var msg: Pair<Long, String>? = null
 
-    var lastAvg = Pair(System.currentTimeMillis(), 0)
+    private data class LastAverage(
+        @JvmField
+        val now: Long,
+        @JvmField
+        val average: Long,
+    )
+
+    private var lastAvg: LastAverage = LastAverage(System.currentTimeMillis(), 0)
+
+    private val textX = 16f.px
+    private val textY = 24f.px
 
     init {
         paintSpectogram.color = 0xFFFF2C00.toInt()
         paintSpectogram.style = Paint.Style.FILL
     }
 
-    fun drawTitle(canvas: Canvas) = canvas.drawText("FFT SPECTOGRAM", 16f.px, 24f.px, paintText)
+    private fun drawTitle(canvas: Canvas) = canvas.drawText("FFT SPECTOGRAM", textX, textY, paintText)
 
-    fun drawIndicator(canvas: Canvas) {
+    private fun drawIndicator(canvas: Canvas) {
         val height = height
         for (i in 0..height) {
             val f = i / height.toDouble()
@@ -54,7 +65,7 @@ class FFTSpectogramView(context: Context, attrs: AttributeSet?) : SimpleSurface(
         }
     }
 
-    fun drawMsg(canvas: Canvas) {
+    private fun drawMsg(canvas: Canvas) {
         val msg = msg ?: return
 
         if (msg.first > System.currentTimeMillis()) {
@@ -62,7 +73,7 @@ class FFTSpectogramView(context: Context, attrs: AttributeSet?) : SimpleSurface(
         }
     }
 
-    fun drawSpectogram(canvas: Canvas) {
+    private fun drawSpectogram(canvas: Canvas) {
         val width = width
         val height = height
 
@@ -92,9 +103,9 @@ class FFTSpectogramView(context: Context, attrs: AttributeSet?) : SimpleSurface(
         }
     }
 
-    fun canDrawSpectogram() = resolution >= minResolution
+    private fun canDrawSpectogram() = resolution >= minResolution
 
-    fun drawGraphic(canvas: Canvas): Canvas {
+    private fun drawGraphic(canvas: Canvas): Canvas {
         canvas.drawColor(bg)
 
         if (!canDrawSpectogram()) {
@@ -143,7 +154,8 @@ class FFTSpectogramView(context: Context, attrs: AttributeSet?) : SimpleSurface(
                 accum = .0f
 
                 for (j in 0 until fft.size / resolution step 2) {
-                    accum += (sqrt(fft[i * j].toDouble().pow(2.0) + fft[i * j + 1].toDouble().pow(2.0))).toFloat() //magnitudes
+                    val index = i * j
+                    accum += (sqrt(fft[index].toDouble().pow(2.0) + fft[index + 1].toDouble().pow(2.0))).toFloat() //magnitudes
                 }
 
                 accum /= resolution
@@ -160,20 +172,21 @@ class FFTSpectogramView(context: Context, attrs: AttributeSet?) : SimpleSurface(
             synchronized(ffts) {
                 ffts.addFirst(bands)
 
-                while (ffts.size > history)
+                while (ffts.size > history) {
                     ffts.removeLast()
+                }
             }
         }
 
         drawSurface(this::drawGraphic)
     }
 
-    private fun avgDrawTime(): Int {
+    private fun avgDrawTime(): Long {
         val now = System.currentTimeMillis()
-        if (now - lastAvg.first > 1000) {
-            lastAvg = Pair(now, if (drawTimes.isNotEmpty()) drawTimes.average().toInt() else 0)
+        if (now - lastAvg.now > 1000) {
+            lastAvg = LastAverage(now, if (drawTimes.isNotEmpty()) drawTimes.average().toLong() else 0L)
         }
 
-        return lastAvg.second
+        return lastAvg.average
     }
 }

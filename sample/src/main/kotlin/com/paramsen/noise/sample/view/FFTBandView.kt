@@ -13,17 +13,17 @@ import kotlin.math.pow
  * @author Pär Amsen 06/2017
  */
 class FFTBandView(context: Context, attrs: AttributeSet?) : SimpleSurface(context, attrs), FFTView {
-    val size = 4096
-    val bands = 64
-    val bandSize = size / bands
-    val maxConst = 1750000000 //reference max value for accum magnitude
-    var average = .0f
+    private val size = 4096
+    private val bands = 64
+    private val bandSize = size / bands
+    private val maxConst = 1750000000 //reference max value for accum magnitude
+    private var average = .0f
 
-    val fft: FloatArray = FloatArray(4096)
-    val paintBandsFill: Paint = Paint()
-    val paintBands: Paint = Paint()
-    val paintAvg: Paint = Paint()
-    val paintText: Paint = textPaint()
+    private val fft: FloatArray = FloatArray(4096)
+    private val paintBandsFill: Paint = Paint()
+    private val paintBands: Paint = Paint()
+    private val paintAvg: Paint = Paint()
+    private val paintText: Paint = textPaint()
 
     init {
         paintBandsFill.color = 0x33FF2C00
@@ -38,21 +38,25 @@ class FFTBandView(context: Context, attrs: AttributeSet?) : SimpleSurface(contex
         paintAvg.style = Paint.Style.STROKE
     }
 
-    fun drawAudio(canvas: Canvas): Canvas {
+    private fun drawAudio(canvas: Canvas): Canvas {
         canvas.drawColor(Color.DKGRAY)
 
+        val bandSize = bandSize
         val height = height
         val width = width
         val bandsF = bands.toFloat()
 
-        for (i in 0..bands - 1) {
+        for (i in 0 until bands) {
+            val bandMulI = i * bandSize
             var acc = .0f
 
             synchronized(fft) {
-                for (j in 0..bandSize - 1 step 2) {
+                var j = 0
+                while (j < bandSize) {
                     //convert real and imag part to get energy
-                    acc += (fft[j + (i * bandSize)].toDouble().pow(2) +
-                            fft[j + 1 + (i * bandSize)].toDouble().pow(2)).toFloat()
+                    acc += (fft[j + bandMulI].toDouble().pow(2.0) +
+                            fft[j + 1 + bandMulI].toDouble().pow(2.0)).toFloat()
+                    j += 2
                 }
 
                 acc /= bandSize / 2
@@ -60,13 +64,18 @@ class FFTBandView(context: Context, attrs: AttributeSet?) : SimpleSurface(contex
 
             average += acc
 
-            canvas.drawRect(width * (i / bandsF), height - (height * min(acc / maxConst.toDouble(), 1.0).toFloat()) - height * .02f, width * (i / bandsF) + width / bandsF, height.toFloat(), paintBandsFill)
-            canvas.drawRect(width * (i / bandsF), height - (height * min(acc / maxConst.toDouble(), 1.0).toFloat()) - height * .02f, width * (i / bandsF) + width / bandsF, height.toFloat(), paintBands)
+            val left = width * (i / bandsF)
+            val top = height - (height * min(acc / maxConst, 1f)) - height * .02f
+            val right = left + width / bandsF
+            val bottom = height.toFloat()
+            canvas.drawRect(left, top, right, bottom, paintBandsFill)
+            canvas.drawRect(left, top, right, bottom, paintBands)
         }
 
         average /= bands
 
-        canvas.drawLine(0f, height - (height * (average / maxConst)) - height * .02f, width.toFloat(), height - (height * (average / maxConst)) - height * .02f, paintAvg)
+        val startY = height - (height * (average / maxConst)) - height * .02f
+        canvas.drawLine(0f, startY, width.toFloat(), startY, paintAvg)
         canvas.drawText("FFT BANDS", 16f.px, 24f.px, paintText)
 
         return canvas
@@ -75,7 +84,7 @@ class FFTBandView(context: Context, attrs: AttributeSet?) : SimpleSurface(contex
     override fun onFFT(fft: FloatArray) {
         synchronized(this.fft) {
             arraycopy(fft, 2, this.fft, 0, fft.size - 2)
-            drawSurface(this::drawAudio)
+            drawSurface(::drawAudio)
         }
     }
 }
