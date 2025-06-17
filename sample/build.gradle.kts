@@ -30,7 +30,7 @@ android {
         versionCode = VERSION_CODE
         versionName = VERSION_NAME
 
-        testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         setProperty("archivesBaseName", "NoiseDemo-$versionName")
     }
@@ -83,7 +83,7 @@ dependencies {
 
     implementation(kotlin("stdlib"))
     implementation("androidx.appcompat:appcompat:1.7.1")
-    implementation("com.android.support.constraint:constraint-layout:2.2.1")
+    implementation("androidx.constraintlayout:constraintlayout:2.2.1")
     implementation("androidx.collection:collection:1.5.0")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:$coroutinesVersion")

@@ -1,6 +1,6 @@
 package com.paramsen.noise.tester
 
-import androidx.test.InstrumentationRegistry
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.paramsen.noise.Noise.Companion.imaginary
 import com.paramsen.noise.Noise.Companion.real
@@ -132,7 +132,7 @@ class NoiseInstrumentationTest {
     }
 
     private fun readFloatsFromFile(fileName: String): FloatArray {
-        return InstrumentationRegistry.getTargetContext().assets.open(fileName).use {
+        return InstrumentationRegistry.getInstrumentation().targetContext.assets.open(fileName).use {
             FloatsSource(it).get()
         }
     }

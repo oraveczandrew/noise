@@ -48,10 +48,10 @@ kotlin.apply {
 dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("junit:junit:4.13.2")
-    androidTestImplementation("com.android.support.test.espresso:espresso-core:3.7.0-alpha03")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0-alpha04")
 
     implementation("androidx.appcompat:appcompat:1.7.1")
-    implementation("com.android.support.constraint:constraint-layout:2.2.1")
+    implementation("androidx.constraintlayout:constraintlayout:2.2.1")
     implementation("com.google.guava:guava:33.4.8-android")
 
     implementation(project(":noise"))

@@ -26,7 +26,7 @@ android.apply {
         targetSdk = 36
         versionCode = 7
         versionName = libraryVersionName
-        testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         externalNativeBuild {
             cmake.apply {
