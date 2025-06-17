@@ -31,12 +31,15 @@ import com.paramsen.noise.sample.databinding.ViewInfoBinding
 import com.paramsen.noise.sample.source.createAudioSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 
 class MainActivity : AppCompatActivity() {
 
@@ -115,7 +118,7 @@ class MainActivity : AppCompatActivity() {
                     }.launchIn(this)
 
                 //FFTView
-                src
+                val fftFlow = src
                     .onEach {
                         p1.next()
                     }
@@ -128,10 +131,16 @@ class MainActivity : AppCompatActivity() {
                     .map { noise.fft(it, FloatArray(4096 + 2)) }
                     .onEach {
                         p3.next()
-                    }.collect { fft ->
-                        fftHeatMapView.onFFT(fft)
-                        fftBandView.onFFT(fft)
                     }
+                    .shareIn(this@launch, started = SharingStarted.WhileSubscribed(), replay = 0)
+
+                fftFlow.onEach { fft ->
+                    fftHeatMapView.onFFT(fft)
+                }.launchIn(this + Dispatchers.Default.limitedParallelism(1))
+
+                fftFlow.onEach { fft ->
+                    fftBandView.onFFT(fft)
+                }.launchIn(this + Dispatchers.Default.limitedParallelism(1))
             }
         }
     }

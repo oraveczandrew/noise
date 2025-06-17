@@ -4,8 +4,20 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.os.Handler
+import android.os.HandlerThread
 import android.util.AttributeSet
 import android.util.Log
+import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.android.HandlerDispatcher
+import kotlinx.coroutines.android.asCoroutineDispatcher
+import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import java.util.ArrayDeque
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -44,6 +56,26 @@ class FFTSpectogramView(context: Context, attrs: AttributeSet?) : SimpleSurface(
     )
 
     private var lastAvg: LastAverage = LastAverage(System.currentTimeMillis(), 0)
+
+    private var _drawingScope: CoroutineScope? = null
+    private val drawingScope: CoroutineScope
+        get() {
+            return _drawingScope ?: kotlin.run {
+                val viewScope = findViewTreeLifecycleOwner()!!.lifecycleScope
+                val thread = HandlerThread("FFTSpectogramView_drawer")
+                thread.start()
+                viewScope.launch {
+                    try {
+                        awaitCancellation()
+                    } finally {
+                        thread.quitSafely()
+                    }
+                }
+                viewScope + Handler(thread.looper).asCoroutineDispatcher()
+            }.also {
+                _drawingScope = it
+            }
+        }
 
     private val textX = 16f.px
     private val textY = 24f.px
@@ -145,17 +177,21 @@ class FFTSpectogramView(context: Context, attrs: AttributeSet?) : SimpleSurface(
     }
 
     override fun onFFT(fft: FloatArray) {
-        if (canDrawSpectogram()) {
+        val bandsToPush = if (canDrawSpectogram()) {
+            val resolution = resolution
             val bands = FloatArray(resolution)
             var accum: Float
             var avg = 0f
 
+            val jUntil = fft.size / resolution
             for (i in 0 until resolution) {
                 accum = .0f
 
-                for (j in 0 until fft.size / resolution step 2) {
+                var j = 0
+                while (j < jUntil) {
                     val index = i * j
                     accum += (sqrt(fft[index].toDouble().pow(2.0) + fft[index + 1].toDouble().pow(2.0))).toFloat() //magnitudes
+                    j += 2
                 }
 
                 accum /= resolution
@@ -169,6 +205,18 @@ class FFTSpectogramView(context: Context, attrs: AttributeSet?) : SimpleSurface(
                 if (bands[i] < avg / 2) bands[i] * 1000f
             }
 
+            bands
+        } else {
+            null
+        }
+
+        drawingScope.launch {
+            onNewBands(bandsToPush)
+        }
+    }
+
+    internal fun onNewBands(bands: FloatArray?) {
+        if (bands != null) {
             synchronized(ffts) {
                 ffts.addFirst(bands)
 
@@ -178,7 +226,7 @@ class FFTSpectogramView(context: Context, attrs: AttributeSet?) : SimpleSurface(
             }
         }
 
-        drawSurface(this::drawGraphic)
+        drawSurface(::drawGraphic)
     }
 
     private fun avgDrawTime(): Long {
