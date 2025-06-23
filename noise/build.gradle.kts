@@ -92,6 +92,10 @@ android.apply {
     }
 }
 
+dependencies.apply {
+    androidTestRuntimeOnly(Dependencies.Androidx.Test.runner)
+}
+
 kotlin {
     compilerOptions.apply {
         jvmTarget.set(JvmTarget.JVM_11)
