@@ -93,7 +93,7 @@ android.apply {
 }
 
 dependencies.apply {
-    androidTestRuntimeOnly(Dependencies.Androidx.Test.runner)
+    androidTestRuntimeOnly("androidx.test:runner:1.7.0-alpha03")
 }
 
 kotlin {
