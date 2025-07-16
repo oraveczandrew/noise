@@ -31,8 +31,6 @@ android {
         versionName = VERSION_NAME
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        setProperty("archivesBaseName", "NoiseDemo-$versionName")
     }
 
     buildTypes {
