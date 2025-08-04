@@ -77,7 +77,7 @@ kotlin.apply {
 
 dependencies {
     val coroutinesVersion = "1.10.2"
-    val lifecycleVersion = "2.9.0"
+    val lifecycleVersion = "2.9.2"
 
     implementation(kotlin("stdlib"))
     implementation("androidx.appcompat:appcompat:1.7.1")

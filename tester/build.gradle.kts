@@ -48,7 +48,7 @@ kotlin.apply {
 dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0-alpha04")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
 
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("androidx.constraintlayout:constraintlayout:2.2.1")
