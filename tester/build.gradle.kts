@@ -52,7 +52,7 @@ dependencies {
 
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("androidx.constraintlayout:constraintlayout:2.2.1")
-    implementation("com.google.guava:guava:33.4.8-android")
+    implementation("com.google.guava:guava:33.5.0-android")
 
     implementation(project(":noise"))
 }
