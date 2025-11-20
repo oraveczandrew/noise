@@ -28,7 +28,7 @@ android.apply {
         versionName = libraryVersionName
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        externalNativeBuild {
+        externalNativeBuild.apply {
             cmake.apply {
                 arguments.addAll(listOf("-DANDROID_STL=none", "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON"))
             }
