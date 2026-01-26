@@ -53,7 +53,7 @@ android.apply {
         group = "init"
         description = "Verify that kissfft is initialized"
 
-        if (!(File("noise/src/main/native/kissfft/kiss_fft.c").exists())) {
+        if (!(File(project.projectDir.absolutePath + "/src/main/native/kissfft/kiss_fft.c").exists())) {
             throw Exception("Initialize git submodules before building (read \"development\" section in readme)")
         }
     }
