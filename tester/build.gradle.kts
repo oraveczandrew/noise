@@ -2,7 +2,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("com.android.application")
-    id("kotlin-android")
 }
 
 android.apply {
@@ -11,7 +10,7 @@ android.apply {
     compileSdk = 36
     buildToolsVersion = "36.1.0"
 
-    defaultConfig {
+    defaultConfig.apply {
         applicationId = "com.paramsen.noise.tester"
         minSdk = 26
         targetSdk = 36
@@ -21,12 +20,12 @@ android.apply {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    buildTypes {
-        getByName("release") {
+    buildTypes.apply {
+        getByName("release").apply {
             isMinifyEnabled = false
             setProguardFiles(
                 listOf(
-                    getDefaultProguardFile("proguard-android.txt"),
+                    getDefaultProguardFile("proguard-android-optimize.txt"),
                     "proguard-rules.pro"
                 )
             )
@@ -45,7 +44,7 @@ kotlin.apply {
     }
 }
 
-dependencies {
+dependencies.apply {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")

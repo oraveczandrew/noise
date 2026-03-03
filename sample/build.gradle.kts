@@ -2,16 +2,15 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("com.android.application")
-    id("kotlin-android")
 }
 
 val VERSION_NAME = "1.1"
 val VERSION_CODE = 4
 
-android {
+android.apply {
     namespace = "com.paramsen.noise.sample"
 
-    signingConfigs {
+    signingConfigs.apply {
         getByName("debug").apply {
             keyAlias = "qqqqqq"
             keyPassword = "qqqqqq"
@@ -23,7 +22,7 @@ android {
     compileSdk = 36
     buildToolsVersion = "36.1.0"
 
-    defaultConfig {
+    defaultConfig.apply {
         applicationId = "com.paramsen.noise.sample"
         minSdk = 26
         targetSdk = 36
@@ -38,27 +37,28 @@ android {
             isMinifyEnabled = false
             setProguardFiles(
                 listOf(
-                    getDefaultProguardFile("proguard-android.txt"),
+                    getDefaultProguardFile("proguard-android-optimize.txt"),
                     "proguard-rules.pro"
                 )
             )
         }
     }
 
-    flavorDimensions("sample")
-    productFlavors {
-        create("devel") {
+    flavorDimensions.add("sample")
+
+    productFlavors.apply {
+        create("devel").apply {
             signingConfig = signingConfigs.getByName("debug")
             versionNameSuffix = "-devel"
             dimension = "sample"
         }
-        create("prod") {
+        create("prod").apply {
             versionNameSuffix = "-prod"
             dimension = "sample"
         }
     }
 
-    buildFeatures {
+    buildFeatures.apply {
         viewBinding = true
         buildConfig = true
     }
@@ -75,7 +75,7 @@ kotlin.apply {
     }
 }
 
-dependencies {
+dependencies.apply {
     val coroutinesVersion = "1.10.2"
     val lifecycleVersion = "2.9.2"
 

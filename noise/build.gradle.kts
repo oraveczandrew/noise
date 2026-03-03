@@ -2,7 +2,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("com.android.library")
-    kotlin("android")
 }
 
 group = "com.github.paramsen"
@@ -23,9 +22,6 @@ android.apply {
         }
 
         minSdk = 26
-        targetSdk = 36
-        versionCode = 7
-        versionName = libraryVersionName
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         externalNativeBuild.apply {
@@ -35,10 +31,18 @@ android.apply {
         }
     }
 
-    buildTypes {
+    lint.apply {
+        targetSdk = 36
+    }
+
+    testOptions.apply {
+        targetSdk = 36
+    }
+
+    buildTypes.apply {
         release {
             isMinifyEnabled = false
-            setProguardFiles(listOf(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"))
+            setProguardFiles(listOf(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"))
         }
     }
 
@@ -58,7 +62,7 @@ android.apply {
         }
     }
 
-    compileOptions {
+    compileOptions.apply {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
@@ -84,7 +88,7 @@ android.apply {
         archives javadocJar
     }*/
 
-    publishing {
+    publishing.apply {
         singleVariant("release") {
             withSourcesJar()
             withJavadocJar()
@@ -96,7 +100,7 @@ dependencies.apply {
     androidTestRuntimeOnly("androidx.test:runner:1.7.0")
 }
 
-kotlin {
+kotlin.apply {
     compilerOptions.apply {
         jvmTarget.set(JvmTarget.JVM_11)
     }
