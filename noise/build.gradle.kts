@@ -25,10 +25,17 @@ android.apply {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         ndkVersion = "29.0.14206865"
 
+        @Suppress("UnstableApiUsage")
         externalNativeBuild.apply {
             cmake.apply {
                 arguments.addAll(listOf("-DANDROID_STL=none", "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON"))
             }
+        }
+    }
+
+    externalNativeBuild.apply {
+        cmake.apply {
+            version = "4.1.2"
         }
     }
 
