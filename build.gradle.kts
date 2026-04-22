@@ -33,7 +33,7 @@ tasks.register<Task>("readme") {
         val input = File("./README_TEMPLATE.md")
         val output = File("./README.md")
 
-        val templateStr = input.readBytes().toString()
+        val templateStr = input.readBytes().contentToString()
 
         val version = project(":noise").version.toString()
         val readmeStr = templateStr.replace("{{version}}", version)
