@@ -1,5 +1,5 @@
 plugins {
-    id("com.github.ben-manes.versions") version "0.53.0"
+    id("com.github.ben-manes.versions") version "0.54.0"
 }
 
 buildscript {
@@ -9,7 +9,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:9.0.1")
+        classpath("com.android.tools.build:gradle:9.1.1")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.3.20")
     }
 }
@@ -29,16 +29,15 @@ tasks.register<Delete>("clean") {
 tasks.register<Task>("readme") {
     description = "Generates the readme file from the template"
 
+    val versionString = project.version.toString()
+    val inputFile = project.file("README_TEMPLATE.md")
+    val outputFile = project.file("README.md")
+
     doLast {
-        val input = File("./README_TEMPLATE.md")
-        val output = File("./README.md")
+        val templateStr = inputFile.readText()
+        val readmeStr = templateStr.replace("{{version}}", versionString)
 
-        val templateStr = input.readBytes().contentToString()
-
-        val version = project(":noise").version.toString()
-        val readmeStr = templateStr.replace("{{version}}", version)
-
-        file(output).writeBytes(readmeStr.toByteArray())
+        outputFile.writeText(readmeStr)
 
         println("README.md generated from template")
     }
