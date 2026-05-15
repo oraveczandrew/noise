@@ -1,3 +1,5 @@
+@file:Suppress("PropertyName")
+
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -19,13 +21,13 @@ android.apply {
         }
     }
 
-    compileSdk = 36
-    buildToolsVersion = "36.1.0"
+    compileSdk = 37
+    buildToolsVersion = "37.0.0"
 
     defaultConfig.apply {
         applicationId = "com.paramsen.noise.sample"
         minSdk = 26
-        targetSdk = 36
+        targetSdk = 37
         versionCode = VERSION_CODE
         versionName = VERSION_NAME
 

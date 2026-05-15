@@ -13,8 +13,8 @@ version = libraryVersionName
 android.apply {
     namespace = "com.paramsen.noise"
 
-    compileSdk = 36
-    buildToolsVersion = "36.1.0"
+    compileSdk = 37
+    buildToolsVersion = "37.0.0"
 
     defaultConfig.apply {
         aarMetadata.apply {
@@ -40,11 +40,11 @@ android.apply {
     }
 
     lint.apply {
-        targetSdk = 36
+        targetSdk = 37
     }
 
     testOptions.apply {
-        targetSdk = 36
+        targetSdk = 37
     }
 
     buildTypes.apply {
