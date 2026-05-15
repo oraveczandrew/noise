@@ -76,14 +76,14 @@ kotlin.apply {
 }
 
 dependencies.apply {
-    val coroutinesVersion = "1.10.2"
+    val coroutinesVersion = "1.11.0"
     val lifecycleVersion = "2.10.0"
 
     implementation(kotlin("stdlib"))
-    implementation("androidx.core:core-ktx:1.17.0")
+    implementation("androidx.core:core-ktx:1.18.0")
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("androidx.constraintlayout:constraintlayout:2.2.1")
-    implementation("androidx.collection:collection:1.5.0")
+    implementation("androidx.collection:collection:1.6.0")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:$coroutinesVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
