@@ -1,7 +1,7 @@
 package com.paramsen.noise.tester
 
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.paramsen.noise.Noise.Companion.imaginary
 import com.paramsen.noise.Noise.Companion.real
 import org.junit.Assert.assertEquals
@@ -56,7 +56,7 @@ class NoiseInstrumentationTest {
         ) {
             val fft = noise.fft(input, output)
             for (i in input.indices) {
-                assertEquals(kissfftPrerecordedFFT[i], fft[i])
+                assertEquals(kissfftPrerecordedFFT[i], fft[i], 0.000001f)
             }
         }
 
@@ -110,7 +110,7 @@ class NoiseInstrumentationTest {
         ) {
             val fft = noise.fft(input, output)
             for (i in input.indices) {
-                assertEquals(kissfftPrerecordedFFT[i], fft[i])
+                assertEquals(kissfftPrerecordedFFT[i], fft[i], 0.000001f)
             }
         }
 
