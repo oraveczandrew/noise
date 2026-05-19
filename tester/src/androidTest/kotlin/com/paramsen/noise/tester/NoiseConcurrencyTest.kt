@@ -13,6 +13,7 @@ import org.junit.Test
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.math.abs
 
 class NoiseConcurrencyTest {
 
@@ -35,7 +36,7 @@ class NoiseConcurrencyTest {
                         noise.fft(src, dst)
                         // Simple sanity check: DC component should be sum(0..1023)
                         val expectedDC = (size * (size - 1) / 2).toFloat()
-                        if (Math.abs(dst[0] - expectedDC) > 1.0f) {
+                        if (abs(dst[0] - expectedDC) > 1.0f) {
                             errorCount.incrementAndGet()
                         }
                     }

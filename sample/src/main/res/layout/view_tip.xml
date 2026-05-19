@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/tip"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -12,17 +13,18 @@
     tools:padding="8dp"
     tools:parentTag="android.widget.LinearLayout">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:src="@drawable/ic_lightbulb_outline_black_24dp"
-        android:tint="#888" />
+        app:tint="#888" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
         android:text="Try whistling!"
-        android:textColor="#888" />
+        android:textColor="#888"
+        tools:ignore="HardcodedText" />
 </merge>

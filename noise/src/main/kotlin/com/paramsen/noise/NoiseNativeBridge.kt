@@ -5,7 +5,6 @@ package com.paramsen.noise
  *
  * @author Pär Amsen 06/2017
  */
-@Suppress("unused")
 object NoiseNativeBridge {
     init {
         System.loadLibrary("noise")

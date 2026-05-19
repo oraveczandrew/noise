@@ -10,10 +10,7 @@ import android.util.AttributeSet
 import android.util.Log
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.android.HandlerDispatcher
 import kotlinx.coroutines.android.asCoroutineDispatcher
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.launch
@@ -118,7 +115,7 @@ class FFTSpectogramView(context: Context, attrs: AttributeSet?) : SimpleSurface(
 
         val hot = hotThresholds[resolution] ?: 0
 
-        for (i in 0 until ffts.size) {
+        for (i in ffts.indices) {
             synchronized(ffts) {
                 band = ffts.elementAtOrNull(i)
             }
